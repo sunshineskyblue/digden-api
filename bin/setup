@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Create network if not exists
+NETWORK_NAME='digden_network'
+docker network ls | grep "${NETWORK_NAME}"
+if [ "$?" -eq 1 ]; then
+  docker network create digden_network
+fi

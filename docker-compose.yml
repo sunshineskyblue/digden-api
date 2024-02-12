@@ -1,6 +1,7 @@
 version: "3.9"
 services:
   php-fpm81:
+    container_name: ${PROJECT_NAME}_${APP_NAME}_php-fpm81
     build:
       context: "./"
       dockerfile: "./docker/php-fpm81/Dockerfile"
@@ -11,9 +12,12 @@ services:
     depends_on:
       - mysql
     working_dir: /var/www
+    networks:
+      - digden_network
 
   nginx:
     image: nginx:1.20-alpine
+    container_name: ${PROJECT_NAME}_${APP_NAME}_nginx
     ports:
       - 8080:80
     volumes:
@@ -22,14 +26,23 @@ services:
     working_dir: /var/www
     depends_on:
       - php-fpm81
+    networks:
+      - digden_network
 
   mysql:
+    container_name: ${PROJECT_NAME}_${APP_NAME}_mysql
     build: ./docker/mysql
     command: --default-authentication-plugin=mysql_native_password
     volumes:
       - mysql-data:/var/lib/mysql
     ports:
       - 3326:3306
+    networks:
+      - digden_network
 
 volumes:
   mysql-data:
+
+networks:
+  digden_network:
+    external: true
